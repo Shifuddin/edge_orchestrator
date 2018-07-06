@@ -1,0 +1,9 @@
+create table Munich_80806(
+ip text primary key,
+building text,
+zip int,
+city text,
+spatial_index point,
+cpu numeric,
+mem numeric
+)
