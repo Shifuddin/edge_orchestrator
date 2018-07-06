@@ -26,7 +26,7 @@ def generate_address():
 def generate_resources():
     
     resources = []
-    for number in range (1 , 10):
+    for number in range (1 , 20):
         resource = {
         'ip': str(randint(1, 255)) + '.'+ str(randint(1, 255)) + '.' + str(randint(1, 255))+'.' + str(randint(1, 255)),
         'building': generate_address() ,
@@ -43,7 +43,7 @@ resourcepool = ResourcePool(engine.place_resource)
 resource = {
         'ip': '10.10.10.14',
         'building': 'Hans leipelt str. 7',
-        'postal_code': 80806,
+        'postal_code': 80807,
         'city': 'Munich',
         'cpu': 1000,
         'mem': 3000

@@ -8,7 +8,6 @@ Created on Wed Jul  4 22:10:00 2018
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from resource_agent import Agent
-from sqlalchemy.exc import IntegrityError
 from orch_engine import Engine
 class EngineManager():
     def __init__(self):
@@ -16,32 +15,27 @@ class EngineManager():
         self.Session = sessionmaker(bind=self.db_engine)
         self.engine_list = []
     
-    def add_agent_db(self, resource, session):
-        print ()
-    def update_agent(self, old_agent, resource, session):
-        print ()
-    def check_db(self, resource, session):
+    def add_agent_db(self, session, resource):
         
-        old_agent = session.query(Agent).filter_by(ip = resource.get('ip')).first()
-        if old_agent is None:
-            print ('New agent')
-        else:
-            print ('old agent')
-        '''
         ag = Agent(ip=resource.get('ip'), building = resource.get('building'),
                    postal_code = resource.get('postal_code'), city=resource.get('city'),
                    cpu= resource.get('cpu'), mem=resource.get('mem'))
         session.add(ag)
+        session.commit()
+    def update_agent(self, old_agent, resource, session):
+        old_agent.building = resource.get('building')
+        old_agent.postal_code= resource.get('postal_code')
+        old_agent.city = resource.get('city')
+        old_agent.cpu = resource.get('cpu')
+        old_agent.mem = resource.get('mem')
+        session.commit()
+    def check_db(self, resource, session):
         
-        try:
-            session.commit()
-            self.create_engine(resource.get('city') + '_' + str (resource.get('postal_code')), resource)
-        except IntegrityError as IE:
-            old_agent = session.query(Agent).filter_by(ip = resource.get('ip')).first()
-            old_agent.postal_code = 1010
-            session.commit()
-            print ('Agent updated')
-        '''
+        old_agent = session.query(Agent).filter_by(ip = resource.get('ip')).first()
+        if old_agent is None:
+            self.add_agent_db(session, resource)
+        else:
+            self.update_agent(old_agent, resource, session)
     
     def create_engine(self, engine_name, resource):
         
