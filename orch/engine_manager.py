@@ -48,10 +48,10 @@ class EngineManager():
         old_agent = session.query(Agent).filter_by(ip = resource.get('ip')).first()
         if old_agent is None:
             self.add_agent_db(session, resource)
-            self.check_engine(resource.get('city') + '_' + resource.get('postal_code'), resource)
+            self.check_engine(resource.get('city') + '_' + str(resource.get('postal_code')), resource)
         else:
             self.update_agent(old_agent, resource, session)
-            self.pass_updated_resource(resource.get('city') + '_' + resource.get('postal_code'), resource)
+            self.pass_updated_resource(resource.get('city') + '_' + str(resource.get('postal_code')), resource)
     
     def check_engine(self, engine_name, resource):
         '''
@@ -90,4 +90,10 @@ class EngineManager():
         '''
         session = self.Session()
         {self.check_db(resource, session) for resource in resources}
+        
+    def inspect_all_engines(self):
+        
+        for engine in self.engine_list:
+            print(engine.region_su.get_current_resources())
+        
         

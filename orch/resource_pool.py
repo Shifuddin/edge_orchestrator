@@ -68,11 +68,13 @@ def generate_single_resource():
         }
     return resource
     
-engine = EngineManager()
-resourcepool = ResourcePool(engine.place_resource)
+engine_mngr = EngineManager()
+resourcepool = ResourcePool(engine_mngr.place_resource)
 
 # add single resource
 resourcepool.accept_resource(generate_single_resource())
         
 # add bulk resources
 resourcepool.accept_bulk_resources(generate_resources())
+
+engine_mngr.inspect_all_engines()
