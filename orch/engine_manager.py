@@ -60,8 +60,8 @@ class EngineManager():
         '''
         for orch_eng in self.engine_list:
             if engine_name == orch_eng.engine_name:
-                orch_eng.add_resource(resource)
-                print ('Engine already exists')
+                orch_eng.add_to_region_supervisor(resource)
+                print ('Engine already exists. Adding data to region supervisor')
                 return
         
         self.create_new_engine(engine_name, resource)
@@ -80,10 +80,9 @@ class EngineManager():
         Create new engine and pass resource to that engine
         '''
         orch_en = Engine(engine_name)
+        orch_en.add_to_region_supervisor(resource)
         self.engine_list.append(orch_en)
-        orch_en.add_resource(resource)
-        print (len(self.engine_list))
-        
+    
     def place_resource(self, resources):
         '''
         Take resources from resouce pool to be placed to region manager of a engine
@@ -94,6 +93,7 @@ class EngineManager():
     def inspect_all_engines(self):
         
         for engine in self.engine_list:
-            print(engine.region_su.get_current_resources())
+            engine.show_engine_data()
+            print ('\n')
         
         
