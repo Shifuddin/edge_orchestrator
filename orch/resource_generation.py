@@ -37,7 +37,7 @@ def generate_address():
     
     return postal_area.get('code'), address
     
-def generate_resources():
+def generate_edge_resources():
     '''
     generate properties of fog node randomly in a bulk amount 
     '''
@@ -57,13 +57,13 @@ def generate_resources():
         resources.append(resource)
     return resources
 
-def generate_single_resource():
+def generate_single_edge_resource():
     '''
     create static single resource properties
     '''
     #postal_code, address = generate_address()
     resource = {
-        'ip': '10.10.11.10',
+        'ip': '10.10.11.11',
         'building': 'Alte Heide 2' ,
         'postal_code': 80805,
         'city': 'Munich',
@@ -74,3 +74,19 @@ def generate_single_resource():
         }
     return resource
 
+def generate_single_iot_resource():
+    '''
+    create static single resource properties
+    '''
+    #postal_code, address = generate_address()
+    resource = {
+        'ip': '10.10.11.11',
+        'building': 'Alte Heide 2' ,
+        'postal_code': 80805,
+        'city': 'Munich',
+        'cpu': 40000,
+        'mem': 25000,
+        'band': 33000,
+        'latency': 0.001
+        }
+    return resource

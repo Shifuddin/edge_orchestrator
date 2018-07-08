@@ -88,6 +88,12 @@ class EngineManager():
         session = self.Session()
         {self.check_db(resource, session) for resource in resources}
         
+    def place_service(self, command, iot_resource):
+        
+        for engine in self.engine_list:
+            if int (engine.name[-5:]) == iot_resource.get('postal_code'):
+                print (engine.name)
+                
     def inspect_all_engines(self):
         
         for engine in self.engine_list:
