@@ -13,4 +13,27 @@ roads = ['Hans-Leipelt-Straße', 'Heimstättenstraße', 'Karl-Beck-Weg'
          , 'Fröttmaninger Straße', 'Guerickestraße', 'Karl-Beck-Weg',
          'Alte Heide', 'Beltweg', 'Berliner Straße', 'Etschweg']
 
-print (random.choice(roads) + ' '+str(random.randint(1,5)))
+
+def bfs_adjacency_list(graph, start):
+    
+    result, queue = [], []
+    queue.append(start)
+    result.append(start)
+    
+    try:
+        while queue:
+            element = queue.pop()
+            for adja in graph[element]:
+                if adja not in result:
+                    queue.append(adja)
+                    result.append(adja)
+        return result
+    except KeyError as KE:
+        return 'Cant found ' + str(KE)
+    
+    
+
+        
+    
+bfs_adjacency_list(, 'Karl-Beck-Weg 1')
+

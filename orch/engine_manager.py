@@ -8,7 +8,7 @@ Created on Wed Jul  4 22:10:00 2018
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from resource_agent import Agent
-from orch_engine import Engine
+from orch_engine_1 import Engine
 class EngineManager():
     def __init__(self):
         self.db_engine = create_engine('postgresql+psycopg2://postgres:321@localhost/orchestrator', echo=False)
@@ -25,20 +25,6 @@ class EngineManager():
         session.add(ag)
         session.commit()
         
-        
-    def update_agent(self, old_agent, resource, session):
-        
-        '''
-        update capabilities of  a fog node for example cpu, memory
-        '''
-        old_agent.building = resource.get('building')
-        old_agent.postal_code= resource.get('postal_code')
-        old_agent.city = resource.get('city')
-        old_agent.cpu = resource.get('cpu')
-        old_agent.mem = resource.get('mem')
-        session.commit()
-        
-        
     def check_db(self, resource, session):
         '''
         check weather a agent / resource already in the database
@@ -50,8 +36,8 @@ class EngineManager():
             self.add_agent_db(session, resource)
             self.check_engine(resource.get('city') + '_' + str(resource.get('postal_code')), resource)
         else:
-            self.update_agent(old_agent, resource, session)
-            self.pass_updated_resource(resource.get('city') + '_' + str(resource.get('postal_code')), resource)
+            self.update_agent_db(old_agent, resource, session)
+            self.update_agent_rs(resource.get('city') + '_' + str(resource.get('postal_code')), resource)
     
     def check_engine(self, engine_name, resource):
         '''
@@ -66,13 +52,25 @@ class EngineManager():
         
         self.create_new_engine(engine_name, resource)
     
-    def pass_updated_resource(self, engine_name, resource):
+    def update_agent_db(self, old_agent, resource, session):
+        
+        '''
+        update capabilities of  a fog node for example cpu, memory
+        '''
+        old_agent.building = resource.get('building')
+        old_agent.postal_code= resource.get('postal_code')
+        old_agent.city = resource.get('city')
+        old_agent.cpu = resource.get('cpu')
+        old_agent.mem = resource.get('mem')
+        session.commit()
+        
+    def update_agent_rs(self, engine_name, resource):
         '''
         pass update resource to a particular engine
         '''
         for orch_eng in self.engine_list:
             if engine_name == orch_eng.engine_name:
-                orch_eng.add_resource(resource)
+                orch_eng.update_region_supervisor(resource)
                 return
     
     def create_new_engine(self, engine_name, resource):
