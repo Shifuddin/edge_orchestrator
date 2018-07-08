@@ -91,8 +91,8 @@ class EngineManager():
     def place_service(self, command, iot_resource):
         
         for engine in self.engine_list:
-            if int (engine.name[-5:]) == iot_resource.get('postal_code'):
-                print (engine.name)
+            if int (engine.engine_name[-5:]) == iot_resource.get('postal_code'):
+                engine.add_to_scheduler(command, iot_resource)
                 
     def inspect_all_engines(self):
         

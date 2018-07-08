@@ -6,11 +6,13 @@ Created on Thu Jul  5 11:49:35 2018
 @author: shifu
 """
 from region_supervisor import Regionsupervisor
+from service_scheduler import Scheduler
 import city_map
 class Engine():
     def __init__(self, engine_name):
         self.engine_name = engine_name
         self.region_su = Regionsupervisor(self.get_region_map())
+        self.scheduler = Scheduler(self.region_su)
     
     def get_region_map(self):
         postal_code = self.engine_name[-5:]
@@ -22,4 +24,6 @@ class Engine():
     def show_engine_data(self):
         print (self.engine_name)
         print (self.region_su.get_current_resources())
-        print (self.region_su.show_region_map())
+        print (self.region_su.get_region_map())
+    def add_to_scheduler(self, command, iot_resource):
+        self.scheduler.schedule(command, iot_resource)

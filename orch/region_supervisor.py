@@ -15,12 +15,20 @@ class Regionsupervisor():
         self.raw_data.append(resource)
         
     def update_resource(self, resource):
+        
+        update = False
         for rs in self.raw_data:
             if rs.get('ip') == resource.get('ip'):
                 self.raw_data.remove(rs)
                 self.raw_data.append(resource)
+                update = True
+        
+        if update == False:
+            self.raw_data.append(resource)
+            print ("Herre")
+    
     def get_current_resources(self):
         return self.raw_data
-    def show_region_map(self):
+    def get_region_map(self):
         return self.region_map
     
