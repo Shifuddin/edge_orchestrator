@@ -5,99 +5,52 @@ Created on Wed Jul  4 22:10:00 2018
 
 @author: shifu
 """
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from resource_agent import Agent
 from orch_engine_1 import Engine
 class EngineManager():
-    def __init__(self):
-        self.db_engine = create_engine('postgresql+psycopg2://postgres:321@localhost/orchestrator', echo=False)
-        self.Session = sessionmaker(bind=self.db_engine)
+    def __init__(self, dao):
         self.engine_list = []
+        self.dao = dao
     
-    def add_agent_db(self, session, resource):
-        '''
-        insert new agen / fog node to database
-        '''
-        ag = Agent(ip=resource.get('ip'), building = resource.get('building'),
-                   postal_code = resource.get('postal_code'), city=resource.get('city'),
-                   cpu= resource.get('cpu'), mem=resource.get('mem'))
-        session.add(ag)
-        session.commit()
+    def check_engine_exists(self, engine_name):
+        for engine in self.engine_list:
+            if engine.engine_name == engine_name:
+                return True
+        return False
         
-    def check_db(self, resource, session):
-        '''
-        check weather a agent / resource already in the database
-        if yes, just update the properties of the resource
-        if no, add the resource to database, check wheather there is a engine for that region
-        '''
-        old_agent = session.query(Agent).filter_by(ip = resource.get('ip')).first()
-        if old_agent is None:
-            self.add_agent_db(session, resource)
-            self.check_engine(resource.get('city') + '_' + str(resource.get('postal_code')), resource)
-        else:
-            self.update_agent_db(old_agent, resource, session)
-            self.update_agent_rs(resource.get('city') + '_' + str(resource.get('postal_code')), resource)
-    
-    def check_engine(self, engine_name, resource):
-        '''
-        Check wheather a engine already exists
-        if yes, just give the resource to region manager of that engine.
-        '''
-        for orch_eng in self.engine_list:
-            if engine_name == orch_eng.engine_name:
-                orch_eng.add_to_region_supervisor(resource)
-                print ('Engine already exists. Adding data to region supervisor')
-                return
-        
-        self.create_new_engine(engine_name, resource)
-    
-    def update_agent_db(self, old_agent, resource, session):
-        
-        '''
-        update capabilities of  a fog node for example cpu, memory
-        '''
-        old_agent.building = resource.get('building')
-        old_agent.postal_code= resource.get('postal_code')
-        old_agent.city = resource.get('city')
-        old_agent.cpu = resource.get('cpu')
-        old_agent.mem = resource.get('mem')
-        session.commit()
-        
-    def update_agent_rs(self, engine_name, resource):
-        '''
-        pass update resource to a particular engine
-        '''
-        for orch_eng in self.engine_list:
-            if engine_name == orch_eng.engine_name:
-                orch_eng.update_region_supervisor(resource)
-                return
-    
-    def create_new_engine(self, engine_name, resource):
+    def create_new_engine(self, engine_name):
         '''
         Create new engine and pass resource to that engine
         '''
-        orch_en = Engine(engine_name)
-        orch_en.add_to_region_supervisor(resource)
-        self.engine_list.append(orch_en)
+        if self.check_engine_exists(engine_name):
+            print ('Engine already exists')
+        else:
+            
+            orch_en = Engine(engine_name, self.dao)
+            self.engine_list.append(orch_en)
     
-    def place_resource(self, resources):
+    def place_blocks(self, blocks):
         '''
-        Take resources from resouce pool to be placed to region manager of a engine
+        Take blocks from resouce pool to be added to the database
         '''
-        session = self.Session()
-        {self.check_db(resource, session) for resource in resources}
+        for block in blocks:
+            if self.dao.add_new_block(block):
+                postal_address = block.get('postal_address')
+                region_name = postal_address[postal_address.find(',')+2: postal_address.rfind(',')]
+                city_name = postal_address[postal_address.rfind(',')+2:]
+                self.create_new_engine(city_name+'_'+region_name)
+                
+                
         
-    def place_service(self, command, iot_resource):
+    def place_service(self, command, requirements, iot_resource):
         
         for engine in self.engine_list:
             if int (engine.engine_name[-5:]) == iot_resource.get('postal_code'):
-                engine.add_to_scheduler(command, iot_resource)
+                engine.assign_service_to_scheduler(requirements, iot_resource)
                 
     def inspect_all_engines(self):
         
         for engine in self.engine_list:
-            engine.show_engine_data()
+            engine.region_su.get_blocks()
             print ('\n')
         
         
