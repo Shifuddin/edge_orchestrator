@@ -46,7 +46,7 @@ Resource pool accepts resources here.
 It is a high level interface to
 add new resources to the orchestrator
 '''
-resourcepool.accept_bulk_resources(rg.generate_edge_resources())
+#resourcepool.accept_bulk_resources(rg.generate_edge_resources())
 
 '''
 Inspects blocks in each region supervisors
@@ -58,7 +58,7 @@ Service pool accepts service here
 It is a high level interface to 
 assign new services to orchestrator for scheduling
 '''
-servicepool.accept_service('hello shifudding', rg.generate_requirement() ,rg.generate_single_iot_resource())
+servicepool.accept_service('hello shifudding', rg.generate_task_details() ,rg.generate_origin_iot())
 
 
 

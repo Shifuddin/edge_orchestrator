@@ -9,33 +9,29 @@ Created on Sun Jul  8 23:20:16 2018
 class Scheduler():
     def __init__(self, region_supervisor):
         self.region_sp = region_supervisor
-        print('scheduler created')
         
-    def get_resource_from_block(self, block):
-        resources = self.region_sp.get_current_resources()
-        
-        #result_resources = []
-        for resource in resources:
-            if resource.get('building') == block:
-                yield resource
-        #return result_resources
-        
-    def check_requirement_matches(self, requriments, block):
-        
-        resources_block = self.get_resource_from_block(block)
-        
-        for r_b in resources_block:
-            if r_b.get('mem') >= requriments.get('mem') and r_b.get('cpu') >= requriments.get('cpu'):
-                yield r_b
-    def bfs_adjacency_list(self, graph, start, requirements):
+
+    def 
+    def bfs_adjacency_list(self, graph, task_details, start_postal_address):
     
         result, queue = [], []
+        
+        start = start_postal_address[0:start_postal_address.find(',')]
+        extra_part = start_postal_address[start_postal_address.find(',')+1:]
+        
+        print (start)
+        print (extra_part)
+        
         queue.append(start)
         result.append(start)
-        matched_nodes = self.check_requirement_matches(requirements, start)
         
-        for node in matched_nodes:
-            print (node)
+        block_obj = self.region_sp.dao.get_resouces_of_block(start_postal_address)
+        
+        if block_obj is not None:
+            for resource in block_obj.resources:
+                print (resource.ip)
+        
+        
         try:
             while queue:
                 element = queue.pop()
@@ -43,18 +39,20 @@ class Scheduler():
                     if adja not in result:
                         queue.append(adja)
                         result.append(adja)
-                        matched_nodes = self.check_requirement_matches(requirements, adja)
+                        
+                        adja_postal_address = adja + ',' + extra_part
+                        block_obj = self.region_sp.dao.get_resouces_of_block(adja_postal_address)
         
-                        for node in matched_nodes:
-                            print (node)
+                        if block_obj is not None:
+                            for resource in block_obj.resources:
+                                print (resource.ip)
             return result
         except KeyError as KE:
             return 'Position in the region unknown ' + str(KE)
     
-    def schedule(self, requirements, iot_resource):
-        print (requirements)
-        print ('Generated at :' + iot_resource.get('building'))
-        self.bfs_adjacency_list(self.region_sp.get_region_map(), iot_resource.get('building'), requirements)
+    def schedule(self, task_details, origin_node):
+        self.bfs_adjacency_list(self.region_sp.get_region_map(), task_details, origin_node.get('postal_address'))
+        #print(self.region_sp.get_region_map())
         
  
         

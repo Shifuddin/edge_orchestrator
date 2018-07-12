@@ -43,9 +43,8 @@ graph_adjacency_list_80806 = {'Beltweg 1': set([ 'Beltweg 2', 'Guerickestra 1'])
 list_graph_adjacency_list = [{'code':80805, 'graph_ad_list':graph_adjacency_list_80805},
                              {'code':80806, 'graph_ad_list':graph_adjacency_list_80806}
                              ]
-def get_adjacency_list(postal_code):
-    
+def get_adjacency_list(postal_code):   
     for graph_adjacency_list in list_graph_adjacency_list:
-        if graph_adjacency_list.get('code') == postal_code:
+        if graph_adjacency_list.get('code') == int(postal_code):
             return graph_adjacency_list.get('graph_ad_list')
         

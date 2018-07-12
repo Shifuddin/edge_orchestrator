@@ -24,23 +24,34 @@ class Dao():
             session = self.Session()
             block_obj = Block(postal_address= block.get('postal_address'), band=block.get('band'), latency=block.get('latency'))
             session.add(block_obj)
-            print("ok")
-            resources_agent = [Agent(ip=resource.get('ip'), cpu=resource.get('cpu'), memory=resource.get('memory'), block_postal_address=block_obj.postal_address) for resource in block.get('resources')]
+            
+            resources_agent = [Agent(ip=resource.get('ip'), cpu_mips=resource.get('cpu_mips'), memory_mb=resource.get('memory_mb'), avg_wt= resource.get('avg_wt'), block_postal_address=block_obj.postal_address) for resource in block.get('resources')]
+            
             block_obj.resources = resources_agent
+            
             session.commit()
-            print ('ok')
             return True
-        except IntegrityError:
+        except IntegrityError as ep:
             return False
-        except Exception as e:
-            print (e)
+
+    def get_all_blocks(self):
+        session = self.Session()
+        blocks = session.query(Block).all()
+        return blocks
         
     def get_blocks_of_region(self, region_name):
+        
         session = self.Session()
         
         blocks = session.query(Block).filter(Block.postal_address.like(region_name)).all()
         
         return blocks
+    
+    def get_resouces_of_block(self, postal_address):
+        session = self.Session()
+        block = session.query(Block).filter_by(postal_address=postal_address).first()
+        return block
+    
     def update_block_properties(self, block):
         session= self.Session()
         

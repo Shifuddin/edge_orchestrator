@@ -27,7 +27,8 @@ class Agent(Base):
     __tablename__ = 'regionagent'
     __table_args__ = {'useexisting':False}
     ip = Column(String, primary_key=True)
-    cpu = Column(Numeric, nullable=False)
-    memory = Column(Numeric, nullable=False)
+    cpu_mips = Column(Numeric, nullable=False)
+    memory_mb = Column(Numeric, nullable=False)
+    avg_wt = Column(Numeric, nullable=False)
     block_postal_address = Column(String, ForeignKey('regionblock.postal_address'), nullable=False)
     block = relationship('Block', back_populates='resources')
