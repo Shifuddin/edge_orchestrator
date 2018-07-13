@@ -47,7 +47,7 @@ class Dao():
         
         return blocks
     
-    def get_resouces_of_block(self, postal_address):
+    def get_block_from_postal_address(self, postal_address):
         session = self.Session()
         block = session.query(Block).filter_by(postal_address=postal_address).first()
         return block

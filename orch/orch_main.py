@@ -11,7 +11,9 @@ import resource_generation as rg
 from resource_pool import ResourcePool
 from service_pool_1 import ServicePool
 from DatabaseAccess import Dao
+import time
 
+current_time = lambda : int (round(time.time() * 1000))
 '''
 Create data access object.
 This object will be used by all classes through out the project
@@ -58,6 +60,7 @@ Service pool accepts service here
 It is a high level interface to 
 assign new services to orchestrator for scheduling
 '''
+
 servicepool.accept_service('hello shifudding', rg.generate_task_details() ,rg.generate_origin_iot())
 
 
