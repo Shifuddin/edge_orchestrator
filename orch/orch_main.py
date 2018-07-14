@@ -60,9 +60,9 @@ Service pool accepts service here
 It is a high level interface to 
 assign new services to orchestrator for scheduling
 '''
-
+start = current_time()
 servicepool.accept_service('hello shifudding', rg.generate_task_details() ,rg.generate_origin_iot())
-
+print (current_time() - start)
 
 
 # add single resource

@@ -114,6 +114,6 @@ def generate_task_details():
         'cpu_time_predicted_sc': uniform(1, 6),
         'cpu_mips_profiled_machine': randint(3300, 4000),
         'required_exe_time_sc': uniform(3, 5),
-        'data_size_mb': randint(2000, 4000)
+        'data_size_mb': randint(200, 400)
             }
     return task_details
